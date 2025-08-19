@@ -1,0 +1,11 @@
+[package]
+name = "gim"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+dotenv = "0.15.0"
+log = "0.4.27"
+reqwest = "0.12.23"
+serenity = "0.12.4"
+tokio = { version = "1.47.1", features = ["full"] }
