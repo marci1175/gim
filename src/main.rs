@@ -1,7 +1,8 @@
 use std::env;
 use std::net::SocketAddr;
 
-use axum::response::IntoResponse;
+use axum::body::Body;
+use axum::http::StatusCode;
 use axum::routing::post;
 use axum::{serve, Json, Router};
 use dotenv::dotenv;
@@ -76,8 +77,8 @@ async fn main() {
     .await.unwrap();
 }
 
-async fn handle_post(Json(payload): Json<String>) -> impl IntoResponse {
-    println!("Received POST data: {:?}", payload);
+async fn handle_post(body: Body) -> StatusCode {
+    println!("Received POST data: {:?}", body);
     
-    "POST received"
+    StatusCode::OK
 }
