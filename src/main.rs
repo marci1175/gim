@@ -1,10 +1,15 @@
 use std::env;
+use std::net::SocketAddr;
 
+use axum::response::IntoResponse;
+use axum::routing::post;
+use axum::{serve, Json, Router};
 use dotenv::dotenv;
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::model::gateway::Ready;
 use serenity::prelude::*;
+use tokio::net::TcpListener;
 
 struct Handler;
 
@@ -57,4 +62,22 @@ async fn main() {
     if let Err(why) = client.start().await {
         println!("Client error: {why:?}");
     }
+
+    // build our application with a route
+    let router = Router::new().route("/", post(handle_post));
+    
+    let listener = TcpListener::bind("0.0.0.0:80").await.unwrap();
+
+    // run it on localhost:3000
+    serve(
+        listener,
+        router.into_make_service_with_connect_info::<SocketAddr>(),
+    )
+    .await.unwrap();
+}
+
+async fn handle_post(Json(payload): Json<String>) -> impl IntoResponse {
+    println!("Received POST data: {:?}", payload);
+    
+    "POST received"
 }
